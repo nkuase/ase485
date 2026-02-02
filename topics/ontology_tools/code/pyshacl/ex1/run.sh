@@ -1,0 +1,1 @@
+pyshacl -df turtle food-safety-shacl.ttl

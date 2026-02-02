@@ -1,0 +1,35 @@
+@prefix ex: <http://example.org/food#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Classes 
+ex:Person a rdfs:Class .
+ex:Food a rdfs:Class .
+ex:PoisonousFood a rdfs:Class ;
+                 rdfs:subClassOf ex:Food .  # ← PoisonousFood Food
+ex:Mushroom a rdfs:Class ;
+            rdfs:subClassOf ex:PoisonousFood .  # ← Mushroom PoisonousFood
+
+# Properties
+ex:eats a rdf:Property ;
+        rdfs:domain ex:Person ;
+        rdfs:range ex:Food .
+
+# Instances
+ex:Alice a ex:Person .
+ex:Bob a ex:Person .
+
+ex:Apple a ex:Food .
+ex:Banana a ex:Food .
+ex:PoisonMushroom a ex:Mushroom .
+ex:ToxicBerry a ex:PoisonousFood .
+
+# Data
+ex:Bob ex:eats ex:Apple .           # ✓ Valid
+ex:Alice ex:eats ex:PoisonMushroom . # ❌ Invalid
+ex:Alice ex:eats ex:ToxicBerry .    # ❌ Invalid 
+
+# Expected Violations:
+# 1. PoisonMushroom → NoPoisonousRule violation ❌
+# 2. PoisonMushroom → NoMushroomRule violation ❌  (same food, different rule)
+# 3. ToxicBerry → NoPoisonousRule violation ❌

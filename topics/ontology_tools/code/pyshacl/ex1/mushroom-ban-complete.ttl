@@ -1,0 +1,84 @@
+@prefix ex: <http://example.org/food#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ========================================
+# Ontology (Classes & Properties)
+# ========================================
+
+ex:Person a rdfs:Class .
+ex:Mushroom a rdfs:Class .
+ex:Food a rdfs:Class .
+
+ex:eats a rdf:Property ;
+        rdfs:domain ex:Person ;
+        rdfs:range ex:Food .
+
+ex:hasName a rdf:Property ;
+           rdfs:domain ex:Person ;
+           rdfs:range xsd:string .
+
+ex:hasAge a rdf:Property ;
+          rdfs:domain ex:Person ;
+          rdfs:range xsd:integer .
+
+# ========================================
+# Instances
+# ========================================
+
+ex:Alice a ex:Person ;
+         ex:hasName "Alice" ;
+         ex:hasAge 25 .
+
+ex:Bob a ex:Person ;
+       ex:hasName "Bob" ;
+       ex:hasAge 30 .
+
+ex:Charlie a ex:Person .  # No name and age -> error 
+
+ex:Apple a ex:Food .
+ex:Banana a ex:Food .
+ex:PoisonMushroom a ex:Mushroom .
+
+# ========================================
+# Test Data
+# ========================================
+
+ex:Alice ex:eats ex:Apple .           # ✓ Valid
+ex:Bob ex:eats ex:PoisonMushroom .    # ❌ Invalid
+ex:Charlie ex:eats ex:Banana .        # ✓ Valid
+
+# ========================================
+# SHACL Shapes
+# ========================================
+
+# Rule 1: Person can eat only Apple or Banana
+ex:NoMushroomRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:eats ;
+        sh:in ( ex:Apple ex:Banana ) ;
+        sh:message "Person can only eat Apple or Banana!"
+    ] .
+
+# Rule 2: Person must have a name
+ex:PersonNameRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:hasName ;
+        sh:minCount 1 ;
+        sh:message "Person must have a name!"
+    ] .
+
+# Rule 3: Age must be between 0 and 150
+ex:PersonAgeRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:hasAge ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 150 ;
+        sh:message "Age must be between 0 and 150!"
+    ] .

@@ -1,0 +1,29 @@
+@prefix ex: <http://example.org/food#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# Classes
+ex:Person a rdfs:Class .
+ex:Mushroom a rdfs:Class .
+ex:Food a rdfs:Class .
+
+# Properties
+ex:eats a rdf:Property .
+
+# Instances
+ex:Alice a ex:Person .
+ex:PoisonMushroom a ex:Mushroom .
+ex:Apple a ex:Food .
+ex:Banana a ex:Food .
+
+# Data
+ex:Alice ex:eats ex:PoisonMushroom .
+
+# SHACL Shape
+ex:NoMushroomRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:eats ;
+        sh:in ( ex:Apple ex:Banana )
+    ] .

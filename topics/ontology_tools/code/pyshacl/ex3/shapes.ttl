@@ -1,0 +1,25 @@
+@prefix ex: <http://example.org/food#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# Rule 1: Person cannot 
+ex:NoPoisonousRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:eats ;
+        sh:class ex:Food ;                    # must be Food
+        sh:not [                               # and must not be
+            sh:class ex:PoisonousFood          # PoisonousFood
+        ] ;
+        sh:message "Person cannot eat poisonous food!"
+    ] .
+
+# Rule 2: Mushroom
+ex:NoMushroomRule a sh:NodeShape ;
+    sh:targetClass ex:Person ;
+    sh:property [
+        sh:path ex:eats ;
+        sh:not [
+            sh:class ex:Mushroom               # Mushroom should be avoided
+        ] ;
+        sh:message "Person cannot eat mushrooms!"
+    ] .
