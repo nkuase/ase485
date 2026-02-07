@@ -1,0 +1,18 @@
+classDiagram
+    class Person {
+        <<owl:Class>>
+        A human being
+    }
+    class Food {
+        <<owl:Class>>
+        Something that can be eaten
+    }
+    class XSDInteger {
+        <<datatype>>
+        xsd:integer
+    }
+
+    Person <|-- age : domain
+    XSDInteger <|-- age : range
+    Person <|-- friendOf : domain
+    Person <|-- friendOf : range

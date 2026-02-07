@@ -1,0 +1,23 @@
+# Query 1: What can Alice (Vegetarian) eat?
+
+PREFIX diet: <http://example.org/diet#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?foodName
+WHERE {
+    # Alice is the person
+    diet:Alice diet:hasRestriction ?restriction .
+    
+    # Get all foods
+    ?food rdf:type diet:Food ;
+          diet:foodName ?foodName .
+    
+    # Filter out foods with incompatible ingredients
+    FILTER NOT EXISTS {
+        ?food diet:containsIngredient ?ingredient .
+        ?restriction diet:incompatibleWith ?ingredientCategory .
+        ?ingredient rdf:type ?ingredientCategory .
+    }
+}
+ORDER BY ?foodName

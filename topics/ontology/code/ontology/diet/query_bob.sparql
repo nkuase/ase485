@@ -1,0 +1,22 @@
+# Query 2: What can Bob (Peanut Allergy) eat?
+
+PREFIX diet: <http://example.org/diet#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?foodName
+WHERE {
+    # Bob is the person
+    diet:Bob diet:hasRestriction ?restriction .
+    
+    # Get all foods
+    ?food rdf:type diet:Food ;
+          diet:foodName ?foodName .
+    
+    # Filter out foods with incompatible ingredients
+    FILTER NOT EXISTS {
+        ?food diet:containsIngredient ?ingredient .
+        ?restriction diet:incompatibleWith ?ingredientCategory .
+        ?ingredient rdf:type ?ingredientCategory .
+    }
+}
+ORDER BY ?foodName

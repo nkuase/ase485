@@ -1,0 +1,56 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix diet: <http://example.org/diet#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# SHACL VALIDATION SHAPES
+# ============================================================================
+
+# Shape 1: Person must have a name
+diet:PersonShape
+    a sh:NodeShape ;
+    sh:targetClass diet:Person ;
+    sh:property [
+        sh:path diet:hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "Person must have exactly one non-empty name" ;
+    ] ;
+    sh:property [
+        sh:path diet:hasRestriction ;
+        sh:minCount 1 ;
+        sh:class diet:Restriction ;
+        sh:message "Person must have at least one dietary restriction" ;
+    ] .
+
+# Shape 2: Food must have name and ingredients
+diet:FoodShape
+    a sh:NodeShape ;
+    sh:targetClass diet:Food ;
+    sh:property [
+        sh:path diet:foodName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "Food must have exactly one non-empty name" ;
+    ] ;
+    sh:property [
+        sh:path diet:containsIngredient ;
+        sh:minCount 1 ;
+        sh:class diet:Ingredient ;
+        sh:message "Food must contain at least one ingredient" ;
+    ] .
+
+# Shape 3: Restriction must define incompatibilities
+diet:RestrictionShape
+    a sh:NodeShape ;
+    sh:targetClass diet:Restriction ;
+    sh:property [
+        sh:path diet:incompatibleWith ;
+        sh:minCount 1 ;
+        sh:class diet:Ingredient ;
+        sh:message "Restriction must define at least one incompatible ingredient category" ;
+    ] .

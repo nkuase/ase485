@@ -1,0 +1,24 @@
+# Query 5: Show all people and what they can eat
+# Matrix view of person compatibility
+
+PREFIX diet: <http://example.org/diet#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?personName ?foodName
+WHERE {
+    # Get all people and foods
+    ?person rdf:type diet:Person ;
+            diet:hasName ?personName ;
+            diet:hasRestriction ?restriction .
+    
+    ?food rdf:type diet:Food ;
+          diet:foodName ?foodName .
+    
+    # Only show if compatible
+    FILTER NOT EXISTS {
+        ?food diet:containsIngredient ?ingredient .
+        ?restriction diet:incompatibleWith ?category .
+        ?ingredient rdf:type ?category .
+    }
+}
+ORDER BY ?personName ?foodName

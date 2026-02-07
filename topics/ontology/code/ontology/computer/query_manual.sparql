@@ -1,0 +1,20 @@
+# Alternative: Manual filtering (for comparison)
+# This shows the OLD way without semantic classes
+
+PREFIX : <http://example.org/computers#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?brand ?model ?price ?ram
+WHERE {
+    ?computer rdf:type :Computer .
+    ?computer :hasBrand ?brand .
+    ?computer :hasModel ?model .
+    ?computer :hasPrice ?price .
+    ?computer :hasRAM ?ram .
+    ?computer :hasGPU ?gpu .
+    ?gpu rdf:type :DedicatedGPU .
+    
+    # Manual filters instead of semantic classes
+    FILTER(?price < 1000 && ?ram >= 16)
+}
+ORDER BY ?price

@@ -1,0 +1,343 @@
+@prefix diet: <http://example.org/diet#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology Declaration
+diet: a owl:Ontology ;
+    rdfs:label "Diet Restrictions Ontology" ;
+    rdfs:comment "An ontology for managing dietary restrictions and food compatibility" .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+# Main Classes
+diet:Person a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:comment "A person with dietary restrictions or preferences" .
+
+diet:Food a owl:Class ;
+    rdfs:label "Food" ;
+    rdfs:comment "A food item or dish" .
+
+diet:Ingredient a owl:Class ;
+    rdfs:label "Ingredient" ;
+    rdfs:comment "An ingredient that makes up food" .
+
+diet:Restriction a owl:Class ;
+    rdfs:label "Dietary Restriction" ;
+    rdfs:comment "A dietary restriction or preference" .
+
+# ============================================================================
+# INGREDIENT HIERARCHY
+# ============================================================================
+
+# Ingredient Categories
+diet:Meat a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Meat" .
+
+diet:Dairy a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Dairy Product" .
+
+diet:Nut a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Nut" .
+
+diet:Seafood a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Seafood" .
+
+diet:Vegetable a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Vegetable" .
+
+diet:Grain a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Grain" .
+
+diet:Egg a owl:Class ;
+    rdfs:subClassOf diet:Ingredient ;
+    rdfs:label "Egg" .
+
+# Specific Meats
+diet:Beef a owl:Class ;
+    rdfs:subClassOf diet:Meat ;
+    rdfs:label "Beef" .
+
+diet:Chicken a owl:Class ;
+    rdfs:subClassOf diet:Meat ;
+    rdfs:label "Chicken" .
+
+diet:Pork a owl:Class ;
+    rdfs:subClassOf diet:Meat ;
+    rdfs:label "Pork" .
+
+# Specific Dairy
+diet:Milk a owl:Class ;
+    rdfs:subClassOf diet:Dairy ;
+    rdfs:label "Milk" .
+
+diet:Cheese a owl:Class ;
+    rdfs:subClassOf diet:Dairy ;
+    rdfs:label "Cheese" .
+
+diet:Butter a owl:Class ;
+    rdfs:subClassOf diet:Dairy ;
+    rdfs:label "Butter" .
+
+# Specific Vegetables
+diet:Lettuce a owl:Class ;
+    rdfs:subClassOf diet:Vegetable ;
+    rdfs:label "Lettuce" .
+
+diet:Broccoli a owl:Class ;
+    rdfs:subClassOf diet:Vegetable ;
+    rdfs:label "Broccoli" .
+
+diet:Carrot a owl:Class ;
+    rdfs:subClassOf diet:Vegetable ;
+    rdfs:label "Carrot" .
+
+diet:Tomato a owl:Class ;
+    rdfs:subClassOf diet:Vegetable ;
+    rdfs:label "Tomato" .
+
+# Specific Grains
+diet:Bread a owl:Class ;
+    rdfs:subClassOf diet:Grain ;
+    rdfs:label "Bread" .
+
+diet:Rice a owl:Class ;
+    rdfs:subClassOf diet:Grain ;
+    rdfs:label "Rice" .
+
+# Specific Nuts
+diet:Peanut a owl:Class ;
+    rdfs:subClassOf diet:Nut ;
+    rdfs:label "Peanut" .
+
+# ============================================================================
+# RESTRICTION TYPES
+# ============================================================================
+
+diet:Allergy a owl:Class ;
+    rdfs:subClassOf diet:Restriction ;
+    rdfs:label "Allergy" .
+
+diet:Religious a owl:Class ;
+    rdfs:subClassOf diet:Restriction ;
+    rdfs:label "Religious Restriction" .
+
+diet:Medical a owl:Class ;
+    rdfs:subClassOf diet:Restriction ;
+    rdfs:label "Medical Restriction" .
+
+diet:Ethical a owl:Class ;
+    rdfs:subClassOf diet:Restriction ;
+    rdfs:label "Ethical Choice" .
+
+# Specific Restrictions
+diet:Vegetarian a owl:Class ;
+    rdfs:subClassOf diet:Ethical ;
+    rdfs:label "Vegetarian" .
+
+diet:Vegan a owl:Class ;
+    rdfs:subClassOf diet:Ethical ;
+    rdfs:label "Vegan" .
+
+diet:Halal a owl:Class ;
+    rdfs:subClassOf diet:Religious ;
+    rdfs:label "Halal" .
+
+diet:Kosher a owl:Class ;
+    rdfs:subClassOf diet:Religious ;
+    rdfs:label "Kosher" .
+
+diet:LactoseIntolerance a owl:Class ;
+    rdfs:subClassOf diet:Medical ;
+    rdfs:label "Lactose Intolerance" .
+
+diet:PeanutAllergy a owl:Class ;
+    rdfs:subClassOf diet:Allergy ;
+    rdfs:label "Peanut Allergy" .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+# Person Properties
+diet:hasName a owl:DatatypeProperty ;
+    rdfs:domain diet:Person ;
+    rdfs:range xsd:string ;
+    rdfs:label "has name" .
+
+diet:hasRestriction a owl:ObjectProperty ;
+    rdfs:domain diet:Person ;
+    rdfs:range diet:Restriction ;
+    rdfs:label "has dietary restriction" .
+
+diet:hasAllergy a owl:ObjectProperty ;
+    rdfs:subPropertyOf diet:hasRestriction ;
+    rdfs:domain diet:Person ;
+    rdfs:range diet:Ingredient ;
+    rdfs:label "has allergy to" .
+
+# Food Properties
+diet:foodName a owl:DatatypeProperty ;
+    rdfs:domain diet:Food ;
+    rdfs:range xsd:string ;
+    rdfs:label "food name" .
+
+diet:containsIngredient a owl:ObjectProperty ;
+    rdfs:domain diet:Food ;
+    rdfs:range diet:Ingredient ;
+    rdfs:label "contains ingredient" .
+
+# Restriction Properties
+diet:incompatibleWith a owl:ObjectProperty ;
+    rdfs:domain diet:Restriction ;
+    rdfs:range diet:Ingredient ;
+    rdfs:label "incompatible with ingredient" .
+
+# ============================================================================
+# RESTRICTION RULES (Incompatibilities)
+# ============================================================================
+
+# Vegetarian cannot eat meat
+diet:VegetarianRestriction a diet:Vegetarian ;
+    diet:incompatibleWith diet:Meat .
+
+# Vegan restrictions (stricter than vegetarian)
+diet:VeganRestriction a diet:Vegan ;
+    diet:incompatibleWith diet:Meat ;
+    diet:incompatibleWith diet:Dairy ;
+    diet:incompatibleWith diet:Egg .
+
+# Lactose intolerance incompatible with dairy
+diet:LactoseIntoleranceRestriction a diet:LactoseIntolerance ;
+    diet:incompatibleWith diet:Dairy .
+
+# Halal restrictions
+diet:HalalRestriction a diet:Halal ;
+    diet:incompatibleWith diet:Pork .
+
+# Peanut allergy
+diet:PeanutAllergyRestriction a diet:PeanutAllergy ;
+    diet:incompatibleWith diet:Peanut .
+
+# ============================================================================
+# PEOPLE (Instances)
+# ============================================================================
+
+diet:Alice a diet:Person ;
+    diet:hasName "Alice Johnson" ;
+    diet:hasRestriction diet:VegetarianRestriction ;
+    rdfs:label "Alice (Vegetarian)" .
+
+diet:Bob a diet:Person ;
+    diet:hasName "Bob Smith" ;
+    diet:hasRestriction diet:PeanutAllergyRestriction ;
+    rdfs:label "Bob (Peanut Allergy)" .
+
+diet:Carol a diet:Person ;
+    diet:hasName "Carol Lee" ;
+    diet:hasRestriction diet:LactoseIntoleranceRestriction ;
+    rdfs:label "Carol (Lactose Intolerant)" .
+
+diet:David a diet:Person ;
+    diet:hasName "David Ahmed" ;
+    diet:hasRestriction diet:HalalRestriction ;
+    rdfs:label "David (Halal)" .
+
+diet:Eve a diet:Person ;
+    diet:hasName "Eve Chen" ;
+    diet:hasRestriction diet:VeganRestriction ;
+    rdfs:label "Eve (Vegan)" .
+
+# ============================================================================
+# INGREDIENT INSTANCES
+# ============================================================================
+
+# Meat instances
+diet:ChickenMeat a diet:Chicken .
+diet:BeefMeat a diet:Beef .
+diet:PorkMeat a diet:Pork .
+
+# Dairy instances
+diet:CheddarCheese a diet:Cheese .
+diet:MozzarellaCheese a diet:Cheese .
+
+# Vegetable instances
+diet:RomaineLettuce a diet:Lettuce .
+diet:FreshBroccoli a diet:Broccoli .
+diet:SlicedCarrot a diet:Carrot .
+diet:CherryTomato a diet:Tomato .
+
+# Grain instances
+diet:WheatBread a diet:Bread .
+diet:WhiteRice a diet:Rice .
+
+# Nut instances
+diet:PeanutButter a diet:Peanut .
+
+# ============================================================================
+# FOOD ITEMS (Menu)
+# ============================================================================
+
+# Caesar Salad - contains chicken and cheese (not vegetarian, has dairy)
+diet:CaesarSalad a diet:Food ;
+    diet:foodName "Caesar Salad" ;
+    diet:containsIngredient diet:RomaineLettuce ;
+    diet:containsIngredient diet:CheddarCheese ;
+    diet:containsIngredient diet:ChickenMeat ;
+    rdfs:label "Caesar Salad" .
+
+# Peanut Butter Sandwich - contains peanut (allergic)
+diet:PBSandwich a diet:Food ;
+    diet:foodName "Peanut Butter Sandwich" ;
+    diet:containsIngredient diet:WheatBread ;
+    diet:containsIngredient diet:PeanutButter ;
+    rdfs:label "Peanut Butter Sandwich" .
+
+# Vegetable Stir Fry - all vegetables (vegetarian, vegan, safe)
+diet:VegStirFry a diet:Food ;
+    diet:foodName "Vegetable Stir Fry" ;
+    diet:containsIngredient diet:FreshBroccoli ;
+    diet:containsIngredient diet:SlicedCarrot ;
+    diet:containsIngredient diet:CherryTomato ;
+    diet:containsIngredient diet:WhiteRice ;
+    rdfs:label "Vegetable Stir Fry" .
+
+# Cheese Pizza - contains cheese (not lactose-free, not vegan)
+diet:CheesePizza a diet:Food ;
+    diet:foodName "Cheese Pizza" ;
+    diet:containsIngredient diet:WheatBread ;
+    diet:containsIngredient diet:MozzarellaCheese ;
+    diet:containsIngredient diet:CherryTomato ;
+    rdfs:label "Cheese Pizza" .
+
+# Beef Burger - contains beef (not vegetarian, not halal if not certified)
+diet:BeefBurger a diet:Food ;
+    diet:foodName "Beef Burger" ;
+    diet:containsIngredient diet:WheatBread ;
+    diet:containsIngredient diet:BeefMeat ;
+    diet:containsIngredient diet:CheddarCheese ;
+    rdfs:label "Beef Burger" .
+
+# Pork Chop - contains pork (not halal, not kosher, not vegetarian)
+diet:PorkChop a diet:Food ;
+    diet:foodName "Pork Chop" ;
+    diet:containsIngredient diet:PorkMeat ;
+    rdfs:label "Pork Chop" .
+
+# Garden Salad - all vegetables (safe for everyone)
+diet:GardenSalad a diet:Food ;
+    diet:foodName "Garden Salad" ;
+    diet:containsIngredient diet:RomaineLettuce ;
+    diet:containsIngredient diet:CherryTomato ;
+    diet:containsIngredient diet:SlicedCarrot ;
+    rdfs:label "Garden Salad" .

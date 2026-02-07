@@ -1,0 +1,23 @@
+# Query 3: Why can't Alice eat a specific food?
+# Shows the conflicting ingredient and restriction
+
+PREFIX diet: <http://example.org/diet#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?personName ?foodName ?restrictionLabel ?ingredientLabel
+WHERE {
+    # Alice and a specific food
+    diet:Alice diet:hasName ?personName ;
+               diet:hasRestriction ?restriction .
+    
+    diet:BeefBurger diet:foodName ?foodName ;
+                    diet:containsIngredient ?ingredient .
+    
+    # Find the conflict
+    ?restriction diet:incompatibleWith ?category .
+    ?ingredient rdf:type ?category .
+    
+    # Get labels for readability
+    ?restriction rdfs:label ?restrictionLabel .
+    ?ingredient rdfs:label ?ingredientLabel .
+}

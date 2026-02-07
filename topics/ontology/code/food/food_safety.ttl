@@ -1,0 +1,110 @@
+@prefix : <http://example.org/food#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology Declaration
+<http://example.org/food> rdf:type owl:Ontology ;
+    rdfs:comment "Food Safety Ontology - demonstrating inference about unsafe food" .
+
+# ============================================
+# CLASSES (Concepts/Vocabulary)
+# ============================================
+
+# Main class: Food
+:Food rdf:type owl:Class ;
+    rdfs:label "Food" ;
+    rdfs:comment "Something a person can eat" .
+
+# Subclasses of Food
+:Mushroom rdf:type owl:Class ;
+    rdfs:subClassOf :Food ;
+    rdfs:label "Mushroom" ;
+    rdfs:comment "A type of food that can be poisonous" .
+
+:Meat rdf:type owl:Class ;
+    rdfs:subClassOf :Food ;
+    rdfs:label "Meat" ;
+    rdfs:comment "A type of food that can become smelly" .
+
+# Safety status classes
+:SafeFood rdf:type owl:Class ;
+    rdfs:subClassOf :Food ;
+    rdfs:label "Safe Food" ;
+    rdfs:comment "Food that is OK to eat" .
+
+:UnsafeFood rdf:type owl:Class ;
+    rdfs:subClassOf :Food ;
+    rdfs:label "Unsafe Food" ;
+    rdfs:comment "Food that is NOT OK to eat" .
+
+# Make SafeFood and UnsafeFood disjoint (mutually exclusive)
+:SafeFood owl:disjointWith :UnsafeFood .
+
+# ============================================
+# PROPERTIES (Relations)
+# ============================================
+
+# Boolean properties for food characteristics
+:isPoisonous rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Food ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is poisonous" ;
+    rdfs:comment "Indicates whether the food contains poison" .
+
+:isSmelly rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Food ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "is smelly" ;
+    rdfs:comment "Indicates whether the food has a bad smell" .
+
+# ============================================
+# RULES (Logic using OWL Restrictions)
+# ============================================
+
+# Rule 1: If a food is poisonous, then it is unsafe
+# Create an anonymous class: "Food that isPoisonous"
+[ rdf:type owl:Class ;
+  owl:intersectionOf (
+    :Food
+    [ rdf:type owl:Restriction ;
+      owl:onProperty :isPoisonous ;
+      owl:hasValue "true"^^xsd:boolean
+    ]
+  ) ;
+  rdfs:subClassOf :UnsafeFood
+] .
+
+# Rule 2: If a food is smelly, then it is unsafe
+# Create an anonymous class: "Food that isSmelly"
+[ rdf:type owl:Class ;
+  owl:intersectionOf (
+    :Food
+    [ rdf:type owl:Restriction ;
+      owl:onProperty :isSmelly ;
+      owl:hasValue "true"^^xsd:boolean
+    ]
+  ) ;
+  rdfs:subClassOf :UnsafeFood
+] .
+
+# ============================================
+# DATA (Actual Facts - Instances)
+# ============================================
+
+# Instance 1: A specific mushroom
+:mushroom1 rdf:type :Mushroom ;
+    rdfs:label "Mushroom 1" ;
+    :isPoisonous "true"^^xsd:boolean .
+
+# Instance 2: A specific meat
+:meat1 rdf:type :Meat ;
+    rdfs:label "Meat 1" ;
+    :isSmelly "true"^^xsd:boolean .
+
+# Instance 3: A safe apple (for comparison)
+:apple1 rdf:type :Food ;
+    rdfs:label "Apple 1" ;
+    :isPoisonous "false"^^xsd:boolean ;
+    :isSmelly "false"^^xsd:boolean .

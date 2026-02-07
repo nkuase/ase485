@@ -1,0 +1,18 @@
+# Find Affordable Gaming Computers using SEMANTIC CLASSES
+# This demonstrates the power of ontology reasoning!
+
+PREFIX : <http://example.org/computers#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?brand ?model ?price ?ram
+WHERE {
+    # Query using DEFINED CLASSES - not manual filters!
+    ?computer rdf:type :AffordableComputer .
+    ?computer rdf:type :GamingComputer .
+    
+    ?computer :hasBrand ?brand .
+    ?computer :hasModel ?model .
+    ?computer :hasPrice ?price .
+    ?computer :hasRAM ?ram .
+}
+ORDER BY ?price

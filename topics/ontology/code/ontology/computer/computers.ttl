@@ -1,0 +1,164 @@
+@prefix : <http://example.org/computers#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology Declaration
+: a owl:Ontology ;
+    rdfs:label "Computer Store Ontology" .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+:Computer a owl:Class ;
+    rdfs:label "Computer" .
+
+:Laptop a owl:Class ;
+    rdfs:subClassOf :Computer ;
+    rdfs:label "Laptop" .
+
+:GPU a owl:Class ;
+    rdfs:label "Graphics Processing Unit" .
+
+:DedicatedGPU a owl:Class ;
+    rdfs:subClassOf :GPU ;
+    rdfs:label "Dedicated GPU" .
+
+# ============================================================================
+# DEFINED CLASSES (using OWL restrictions)
+# ============================================================================
+
+# AffordableComputer = Computer with price < 1000
+:AffordableComputer a owl:Class ;
+    rdfs:label "Affordable Computer" ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Computer
+            [
+                a owl:Restriction ;
+                owl:onProperty :hasPrice ;
+                owl:someValuesFrom [
+                    a rdfs:Datatype ;
+                    owl:onDatatype xsd:integer ;
+                    owl:withRestrictions (
+                        [ xsd:maxExclusive 1000 ]
+                    )
+                ]
+            ]
+        )
+    ] .
+
+# GamingComputer = Computer with RAM >= 16 AND dedicated GPU
+:GamingComputer a owl:Class ;
+    rdfs:label "Gaming Computer" ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Computer
+            [
+                a owl:Restriction ;
+                owl:onProperty :hasRAM ;
+                owl:someValuesFrom [
+                    a rdfs:Datatype ;
+                    owl:onDatatype xsd:integer ;
+                    owl:withRestrictions (
+                        [ xsd:minInclusive 16 ]
+                    )
+                ]
+            ]
+            [
+                a owl:Restriction ;
+                owl:onProperty :hasGPU ;
+                owl:someValuesFrom :DedicatedGPU
+            ]
+        )
+    ] .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+:hasPrice a owl:DatatypeProperty ;
+    rdfs:domain :Computer ;
+    rdfs:range xsd:integer ;
+    rdfs:label "has price" .
+
+:hasRAM a owl:DatatypeProperty ;
+    rdfs:domain :Computer ;
+    rdfs:range xsd:integer ;
+    rdfs:label "has RAM in GB" .
+
+:hasGPU a owl:ObjectProperty ;
+    rdfs:domain :Computer ;
+    rdfs:range :GPU ;
+    rdfs:label "has GPU" .
+
+:hasBrand a owl:DatatypeProperty ;
+    rdfs:domain :Computer ;
+    rdfs:range xsd:string ;
+    rdfs:label "has brand" .
+
+:hasModel a owl:DatatypeProperty ;
+    rdfs:domain :Computer ;
+    rdfs:range xsd:string ;
+    rdfs:label "has model" .
+
+# ============================================================================
+# GPU INSTANCES
+# ============================================================================
+
+:RTX4060 a :DedicatedGPU ;
+    rdfs:label "NVIDIA RTX 4060" .
+
+:GTX1660 a :DedicatedGPU ;
+    rdfs:label "NVIDIA GTX 1660" .
+
+:IntelUHD a :GPU ;
+    rdfs:label "Intel UHD Graphics" .
+
+# ============================================================================
+# COMPUTER INSTANCES
+# ============================================================================
+
+# 1. ASUS TUF Gaming A15 - Affordable + Gaming
+:Computer1 a :Laptop ;
+    :hasBrand "ASUS" ;
+    :hasModel "TUF Gaming A15" ;
+    :hasPrice 899 ;
+    :hasRAM 16 ;
+    :hasGPU :RTX4060 .
+
+# 2. CyberPowerPC Gamer Xtreme - Affordable + Gaming
+:Computer2 a :Laptop ;
+    :hasBrand "CyberPowerPC" ;
+    :hasModel "Gamer Xtreme" ;
+    :hasPrice 949 ;
+    :hasRAM 16 ;
+    :hasGPU :GTX1660 .
+
+# 3. Alienware M15 R7 - Gaming but NOT Affordable (too expensive)
+:Computer3 a :Laptop ;
+    :hasBrand "Alienware" ;
+    :hasModel "M15 R7" ;
+    :hasPrice 1499 ;
+    :hasRAM 32 ;
+    :hasGPU :RTX4060 .
+
+# 4. HP Pavilion 15 - Affordable but NOT Gaming (integrated GPU)
+:Computer4 a :Laptop ;
+    :hasBrand "HP" ;
+    :hasModel "Pavilion 15" ;
+    :hasPrice 599 ;
+    :hasRAM 16 ;
+    :hasGPU :IntelUHD .
+
+# 5. Dell Inspiron 15 - Affordable but NOT Gaming (low RAM)
+:Computer5 a :Laptop ;
+    :hasBrand "Dell" ;
+    :hasModel "Inspiron 15" ;
+    :hasPrice 449 ;
+    :hasRAM 8 ;
+    :hasGPU :IntelUHD .

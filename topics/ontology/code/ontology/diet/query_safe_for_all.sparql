@@ -1,0 +1,22 @@
+# Query 4: Which foods can ALL people eat?
+# Find foods that are compatible with everyone's restrictions
+
+PREFIX diet: <http://example.org/diet#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?foodName
+WHERE {
+    # Get all foods
+    ?food rdf:type diet:Food ;
+          diet:foodName ?foodName .
+    
+    # Must be compatible with ALL people
+    FILTER NOT EXISTS {
+        ?person rdf:type diet:Person ;
+                diet:hasRestriction ?restriction .
+        ?food diet:containsIngredient ?ingredient .
+        ?restriction diet:incompatibleWith ?category .
+        ?ingredient rdf:type ?category .
+    }
+}
+ORDER BY ?foodName
